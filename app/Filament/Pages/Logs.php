@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use Exception;
 use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Widgets\StatsOverviewWidget;
@@ -13,11 +14,12 @@ class Logs extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.logs';
-    protected static ?string $title = 'Logs';
+    protected static ?string $title = 'Logs Deployments';
+    //Cambiar slug
+    protected static ?string $slug = 'logs-deployments';
 
     public $defaultAction = 'onboarding';
 
-    public $forge = null;
     public $logs = '';
     public $selectedProject;
     public $projects = [];
@@ -28,14 +30,22 @@ class Logs extends Page
     public $selectedDeployment;
     public $deployments = [];
 
+    public bool $errorAuthForge = false;
+    public string $errorAuthForgeMessage = 'Error de autenticación con Forge';
+
     public function mount()
     {
-        $this->loadServers();
+        try {
+            $this->loadServers();
+        } catch (Exception $e) {
+            $this->errorAuthForge = true;
+            // $this->errorAuthForgeMessage = $e->getMessage();
+        }
     }
 
     protected function getForgeInstance()
     {
-        return $this->forge ?? new Forge(env('FORGE_API_TOKEN'));
+        return new Forge(env('FORGE_API_TOKEN'));
     }
 
     protected function loadServers()

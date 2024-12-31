@@ -5,6 +5,16 @@
         Button
     </button> --}}
 
+    {{-- @dd($errors, $errors->has('api_token')) --}} 
+
+
+
+    @if ($errorAuthForge)
+        <div class="p-4 rounded mb-4">
+            <span class="dark:text-red-500 ">{{ $errorAuthForgeMessage }}</span>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <x-filament::input.wrapper class="p-2">
             <div class="flex justify-between">
