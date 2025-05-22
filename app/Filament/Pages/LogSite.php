@@ -50,9 +50,9 @@ class LogSite extends Page
         })->toArray();
 
         // solo dejar el que tenga name == 'creatienda-qa'
-        $this->servers = collect($this->servers)->filter(function ($server) {
-            return $server['name'] == 'creatienda-qa';
-        })->toArray();
+        // $this->servers = collect($this->servers)->filter(function ($server) {
+        //     return $server['name'] == 'creatienda-qa';
+        // })->toArray();
     }
 
     public function loadSites()
