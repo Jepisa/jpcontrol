@@ -53,9 +53,9 @@ class Logs extends Page
         }
     }
 
-    protected function getForgeInstance()
+    protected function getForgeInstance(): Forge
     {
-        return new Forge(env('FORGE_API_TOKEN'));
+        return new Forge(config('services.forge.token'));
     }
 
     protected function loadServers()

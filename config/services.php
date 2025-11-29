@@ -45,4 +45,8 @@ return [
         'project_key' => env('JIRA_PROJECT_KEY'),
     ],
 
+    'forge' => [
+        'token' => env('FORGE_API_TOKEN'),
+    ],
+
 ];
