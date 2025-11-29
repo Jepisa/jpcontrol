@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TicketResource\RelationManagers;
 
 use App\Forms\Components\MentionRichEditor;
+use App\Services\MentionService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -64,6 +65,15 @@ class CommentsRelationManager extends RelationManager
                         $data['user_id'] = auth()->id();
 
                         return $data;
+                    })
+                    ->after(function ($record) {
+                        $mentionService = app(MentionService::class);
+                        $mentionService->notifyMentionedUsers(
+                            $record->body,
+                            $record->ticket,
+                            auth()->user(),
+                            'comment'
+                        );
                     }),
             ])
             ->actions([
