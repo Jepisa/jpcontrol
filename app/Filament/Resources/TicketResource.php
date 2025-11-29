@@ -6,6 +6,7 @@ use App\Enums\TicketEnvironment;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Filament\Resources\TicketResource\Pages;
+use App\Filament\Resources\TicketResource\RelationManagers;
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -76,6 +77,13 @@ class TicketResource extends Resource
                             ->default(fn () => auth()->id())
                             ->disabled()
                             ->dehydrated(),
+
+                        Forms\Components\Select::make('assigned_to')
+                            ->label('Asignado a')
+                            ->relationship('assignee', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->placeholder('Sin asignar'),
                     ])
                     ->columns(2),
 
@@ -122,6 +130,13 @@ class TicketResource extends Resource
                     ->label('Reportado por')
                     ->sortable()
                     ->searchable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('assignee.name')
+                    ->label('Asignado a')
+                    ->sortable()
+                    ->searchable()
+                    ->placeholder('Sin asignar')
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('priority')
@@ -179,6 +194,11 @@ class TicketResource extends Resource
                     ->relationship('user', 'name')
                     ->multiple(),
 
+                Tables\Filters\SelectFilter::make('assignee')
+                    ->label('Asignado a')
+                    ->relationship('assignee', 'name')
+                    ->multiple(),
+
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
@@ -212,7 +232,7 @@ class TicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CommentsRelationManager::class,
         ];
     }
 

@@ -8,6 +8,7 @@ use App\Enums\TicketStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ticket extends Model
 {
@@ -16,6 +17,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'user_id',
+        'assigned_to',
         'title',
         'description',
         'status',
@@ -45,6 +47,16 @@ class Ticket extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(TicketComment::class);
     }
 
     public function isOpen(): bool

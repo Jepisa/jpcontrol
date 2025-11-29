@@ -7,9 +7,11 @@ use App\Enums\TicketStatus;
 use App\Filament\Resources\TicketResource\Pages\CreateTicket;
 use App\Filament\Resources\TicketResource\Pages\EditTicket;
 use App\Filament\Resources\TicketResource\Pages\ListTickets;
+use App\Filament\Resources\TicketResource\RelationManagers\CommentsRelationManager;
 use App\Jobs\CreateJiraIssueJob;
 use App\Jobs\SendTicketToSlackJob;
 use App\Models\Ticket;
+use App\Models\TicketComment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -138,5 +140,86 @@ class TicketTest extends TestCase
             ])
             ->call('create')
             ->assertHasFormErrors(['description' => 'required']);
+    }
+
+    public function test_can_create_comment_on_ticket(): void
+    {
+        $ticket = Ticket::factory()->create();
+
+        Livewire::test(CommentsRelationManager::class, [
+            'ownerRecord' => $ticket,
+            'pageClass' => EditTicket::class,
+        ])
+            ->callTableAction('create', data: [
+                'body' => '<p>This is a test comment</p>',
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertDatabaseHas('ticket_comments', [
+            'ticket_id' => $ticket->id,
+            'user_id' => $this->user->id,
+            'body' => '<p>This is a test comment</p>',
+        ]);
+    }
+
+    public function test_can_edit_own_comment(): void
+    {
+        $ticket = Ticket::factory()->create();
+        $comment = TicketComment::factory()->create([
+            'ticket_id' => $ticket->id,
+            'user_id' => $this->user->id,
+            'body' => '<p>Original comment</p>',
+        ]);
+
+        Livewire::test(CommentsRelationManager::class, [
+            'ownerRecord' => $ticket,
+            'pageClass' => EditTicket::class,
+        ])
+            ->callTableAction('edit', $comment, data: [
+                'body' => '<p>Updated comment</p>',
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertDatabaseHas('ticket_comments', [
+            'id' => $comment->id,
+            'body' => '<p>Updated comment</p>',
+        ]);
+    }
+
+    public function test_cannot_edit_other_user_comment(): void
+    {
+        $ticket = Ticket::factory()->create();
+        $otherUser = User::factory()->create();
+        $comment = TicketComment::factory()->create([
+            'ticket_id' => $ticket->id,
+            'user_id' => $otherUser->id,
+            'body' => '<p>Other user comment</p>',
+        ]);
+
+        Livewire::test(CommentsRelationManager::class, [
+            'ownerRecord' => $ticket,
+            'pageClass' => EditTicket::class,
+        ])
+            ->assertTableActionHidden('edit', $comment);
+    }
+
+    public function test_can_delete_own_comment(): void
+    {
+        $ticket = Ticket::factory()->create();
+        $comment = TicketComment::factory()->create([
+            'ticket_id' => $ticket->id,
+            'user_id' => $this->user->id,
+        ]);
+
+        Livewire::test(CommentsRelationManager::class, [
+            'ownerRecord' => $ticket,
+            'pageClass' => EditTicket::class,
+        ])
+            ->callTableAction('delete', $comment)
+            ->assertHasNoTableActionErrors();
+
+        $this->assertDatabaseMissing('ticket_comments', [
+            'id' => $comment->id,
+        ]);
     }
 }

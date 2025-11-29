@@ -18,6 +18,7 @@ class TicketFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::factory(),
+            'assigned_to' => fake()->optional(0.5)->passthrough(\App\Models\User::factory()),
             'title' => fake()->sentence(),
             'description' => fake()->paragraph(),
             'status' => fake()->randomElement(['open', 'in_progress', 'resolved', 'closed', 'on_hold']),

@@ -2,27 +2,42 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
                 'password' => bcrypt('Admin00123456789'),
+                'status' => UserStatus::Active,
             ]
         );
+        $admin->assignRole('Administrador');
 
-        User::updateOrCreate(
-            ['email' => 'maintainer@example.com'],
+        $maintainer = User::updateOrCreate(
+            ['email' => 'mantenimiento@example.com'],
             [
-                'name' => 'Maintainer User',
+                'name' => 'Mantenimiento User',
                 'password' => bcrypt('PasswordMantainer2025'),
+                'status' => UserStatus::Active,
             ]
         );
+        $maintainer->assignRole('Mantenimiento');
+
+        $soporte = User::updateOrCreate(
+            ['email' => 'soporte@example.com'],
+            [
+                'name' => 'Soporte User',
+                'password' => bcrypt('PasswordSoporte2025'),
+                'status' => UserStatus::Active,
+            ]
+        );
+        $soporte->assignRole('Soporte');
     }
 }
