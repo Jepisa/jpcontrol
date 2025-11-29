@@ -33,6 +33,16 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+        'webhook_url' => env('SLACK_WEBHOOK_URL'),
+        'token' => env('SLACK_TOKEN'),
+        'tickets_channel' => env('SLACK_TICKETS_CHANNEL', 'tickets'),
+    ],
+
+    'jira' => [
+        'url' => env('JIRA_URL'),
+        'email' => env('JIRA_EMAIL'),
+        'api_token' => env('JIRA_API_TOKEN'),
+        'project_key' => env('JIRA_PROJECT_KEY'),
     ],
 
 ];

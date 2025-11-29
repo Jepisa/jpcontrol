@@ -6,7 +6,6 @@ use Exception;
 use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Widgets\StatsOverviewWidget;
-use Illuminate\Support\Facades\Http;
 use Laravel\Forge\Forge;
 
 class Logs extends Page
@@ -14,23 +13,34 @@ class Logs extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.logs';
+
     protected static ?string $title = 'Logs Deployments';
-    //Cambiar slug
+
+    // Cambiar slug
     protected static ?string $slug = 'logs-deployments';
 
     public $defaultAction = 'onboarding';
 
     public $logs = '';
+
     public $selectedProject;
+
     public $projects = [];
+
     public $selectedServer;
+
     public $servers = [];
+
     public $selectedSite;
+
     public $sites = [];
+
     public $selectedDeployment;
+
     public $deployments = [];
 
     public bool $errorAuthForge = false;
+
     public string $errorAuthForgeMessage = 'Error de autenticación con Forge';
 
     public function mount()
@@ -78,7 +88,7 @@ class Logs extends Page
             })->toArray();
         }
 
-        //reset deployments and logs
+        // reset deployments and logs
         $this->selectedSite = null;
         $this->deployments = [];
         $this->selectedDeployment = null;
@@ -99,7 +109,7 @@ class Logs extends Page
             })->toArray();
         }
 
-        // reset 
+        // reset
         $this->logs = '';
         $this->selectedDeployment = null;
     }
@@ -113,17 +123,19 @@ class Logs extends Page
                 $output = $site->getDeploymentHistoryOutput($this->selectedDeployment)['output'] ?? 'No Se puedo cargar los logs';
                 $this->logs = $this->removeAnsiSequences($output);
             } catch (\Laravel\Forge\Exceptions\NotFoundException $e) {
-                $this->logs = 'No Se puedo cargar los logs: ' . $e->getMessage();
+                $this->logs = 'No Se puedo cargar los logs: '.$e->getMessage();
             }
         }
     }
 
-    function removeAnsiSequences($text) {
+    public function removeAnsiSequences($text)
+    {
         if ($text === null) {
             return '';
         }
         // Regex para eliminar secuencias ANSI
         $text = preg_replace('/\x1B\[[0-9;]*m/', '', $text);
+
         return $text;
     }
 
@@ -133,7 +145,7 @@ class Logs extends Page
             ->modalHeading('Welcome Che')
             ->visible(fn (): bool => false);
     }
- 
+
     // protected function getHeaderWidgets(): array
     // {
     //     return [
@@ -143,7 +155,7 @@ class Logs extends Page
 
     public static function canAccess(): bool
     {
-        return true; //auth()->user()->can('view logs');
+        return true; // auth()->user()->can('view logs');
     }
 
     // public function deleteAction(): Action

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
-                'password' => bcrypt('Admin00123456789')
+                'password' => bcrypt('Admin00123456789'),
             ]
         );
 
@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             ['email' => 'maintainer@example.com'],
             [
                 'name' => 'Maintainer User',
-                'password' => bcrypt('PasswordMantainer2025')
+                'password' => bcrypt('PasswordMantainer2025'),
             ]
         );
     }
