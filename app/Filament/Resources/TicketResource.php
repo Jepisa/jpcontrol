@@ -7,6 +7,7 @@ use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers;
+use App\Forms\Components\MentionRichEditor;
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -41,9 +42,12 @@ class TicketResource extends Resource
                             ->maxLength(255)
                             ->columnSpanFull(),
 
-                        Forms\Components\RichEditor::make('description')
+                        MentionRichEditor::make('description')
                             ->label('Descripción')
                             ->required()
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('ticket-descriptions')
+                            ->fileAttachmentsVisibility('public')
                             ->columnSpanFull(),
 
                         Forms\Components\Select::make('priority')

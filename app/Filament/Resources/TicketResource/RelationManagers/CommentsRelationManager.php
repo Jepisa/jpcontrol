@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TicketResource\RelationManagers;
 
+use App\Forms\Components\MentionRichEditor;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -21,7 +22,7 @@ class CommentsRelationManager extends RelationManager
                 Forms\Components\Hidden::make('user_id')
                     ->default(fn () => auth()->id()),
 
-                Forms\Components\RichEditor::make('body')
+                MentionRichEditor::make('body')
                     ->label('Comentario')
                     ->required()
                     ->fileAttachmentsDisk('public')
